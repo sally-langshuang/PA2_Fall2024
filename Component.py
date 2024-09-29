@@ -223,6 +223,46 @@ class Component:
 
         # Change only this line!
         myTransformation = np.identity(4)
+        theta = np.pi/2
+        myTransformationx = np.array([
+            [1, 0, 0, 0],
+            [0, np.cos(theta), -np.sin(theta), 0],
+            [0, np.sin(theta), np.cos(theta), 0],
+            [0, 0, 0, 1],
+        ])
+
+        myTransformationy = np.array([
+            [np.cos(theta), 0, np.sin(theta), 0],
+            [0, 1, 0, 0],
+            [-np.sin(theta), 0, np.cos(theta), 0],
+            [0, 0, 0, 1],
+        ])
+
+
+        myTransformationz = np.array([
+            [np.cos(theta), -np.sin(theta), 0, 0],
+            [np.sin(theta), np.cos(theta), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ])
+
+        tx, ty, tz = 1, 0, 0
+        movTrans = np.array([
+            [1, 0, 0, tx],
+            [0, 1, 0, ty],
+            [0, 0, 1, tz],
+            [0, 0, 0, 1],
+        ])
+
+        sx, sy, sz = 1, 1, 1
+        scaleTrans = np.array([
+            [sx, 0, 0, 0],
+            [0, sy, 0, 0],
+            [0, 0, sz, 0],
+            [0, 0, 0, 1],
+        ])
+
+        myTransformation = myTransformationy
 
         self.transformationMat = parentTransformationMat @ self.postRotationMat @ myTransformation @ self.preRotationMat 
 
