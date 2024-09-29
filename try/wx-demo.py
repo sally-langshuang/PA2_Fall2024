@@ -128,11 +128,39 @@ class OpenGLCanvas2(glcanvas.GLCanvas):
         self.SwapBuffers()
 
 
+class My(glcanvas.GLCanvas):
+    fps = 120
+    def __init__(self, parent):
+        glcanvas.GLCanvas.__init__(self, parent)
+        self.init = False
+        self.Bind(wx.EVT_TIMER, self.OnPaint)
+        self.context = glcanvas.GLContext(self)
+        self.timer = wx.Timer(self, 1)  # TIMER_ID set to 1
+        self.timer.Start(int(1000 / self.fps), oneShot=wx.TIMER_CONTINUOUS)
+
+    def OnPaint(self, event=None):
+        self.SetCurrent(self.context)
+        if not self.init:
+            self.InitGL()
+            self.init = True
+        self.OnDraw()
+
+    def InitGL(self):
+        self.SetCurrent(self.context)
+        OpenGL.GL.glMatrixMode(OpenGL.GL.GL_MODELVIEW)
+        self.size = self.GetClientSize()
+
+    def OnDraw(self):
+        pass
+
+class Component:
+    def __init__(self):
+        pass
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         self.size = (1280, 720)
         wx.Frame.__init__(self, None, title="my wx frame", size=self.size)
-        self.canvas = OpenGLCanvas2(self)
+        self.canvas = My(self)
 
 class MyApp(wx.App):
     def OnInit(self):

@@ -222,7 +222,7 @@ class Component:
         # e.g. self.transformationMat = C @ B @ A 
 
         # Change only this line!
-        myTransformation = np.identity(4)
+
         theta = np.pi/2
         myTransformationx = np.array([
             [1, 0, 0, 0],
@@ -246,7 +246,7 @@ class Component:
             [0, 0, 0, 1],
         ])
 
-        tx, ty, tz = 1, 0, 0
+        tx, ty, tz = 0, 0, 0.5
         movTrans = np.array([
             [1, 0, 0, tx],
             [0, 1, 0, ty],
@@ -262,9 +262,11 @@ class Component:
             [0, 0, 0, 1],
         ])
 
-        myTransformation = myTransformationy
+        myTransformation = movTrans
+        # myTransformation = np.identity(4)
 
         self.transformationMat = parentTransformationMat @ self.postRotationMat @ myTransformation @ self.preRotationMat 
+
 
         for c in self.children:
             c.update(self.transformationMat)
