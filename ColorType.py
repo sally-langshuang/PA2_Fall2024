@@ -185,10 +185,10 @@ class ColorType:
 
 YELLOW = ColorType(1, 1, 0)
 ORANGE = ColorType(1, 0.5, 0)
-DARKORANGE1 = ColorType(1, 140 / 255, 0)
-DARKORANGE2 = ColorType(200 / 255, 95 / 255, 0)
-DARKORANGE3 = ColorType(160 / 255, 80 / 255, 0)
-DARKORANGE4 = ColorType(130 / 255, 60 / 255, 0)
+DARKORANGE1 = ColorType(1, 140 / 255, 0) # 1, 0.54, 0
+DARKORANGE2 = ColorType(200 / 255, 95 / 255, 0) # 0.7 , 0.37, 0
+DARKORANGE3 = ColorType(160 / 255, 80 / 255, 0) # 0.62, 0.31, 0
+DARKORANGE4 = ColorType(130 / 255, 60 / 255, 0) # 0.50, 0.23, 0
 
 DARKGREEN = ColorType(0, 100 / 255, 0)
 GREEN = ColorType(0, 1, 0)

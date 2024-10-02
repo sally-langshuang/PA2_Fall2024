@@ -215,55 +215,13 @@ class Component:
             rotationMatV = self.glUtility.rotate(self.vAngle, self.vAxis, False)
             rotationMatW = self.glUtility.rotate(self.wAngle, self.wAxis, False)
         scalingMat = self.glUtility.scale(*self.currentScaling, False)
-
         ##### TODO 1: Write the correct transformation to be applied to each Component
         # Finish this function by writing one line of code that sets myTransformation to the correct value.
         # HINT: you can use the @ operator to multiply numpy matrices
         # e.g. self.transformationMat = C @ B @ A 
 
         # Change only this line!
-
-        theta = np.pi/2
-        myTransformationx = np.array([
-            [1, 0, 0, 0],
-            [0, np.cos(theta), -np.sin(theta), 0],
-            [0, np.sin(theta), np.cos(theta), 0],
-            [0, 0, 0, 1],
-        ])
-
-        myTransformationy = np.array([
-            [np.cos(theta), 0, np.sin(theta), 0],
-            [0, 1, 0, 0],
-            [-np.sin(theta), 0, np.cos(theta), 0],
-            [0, 0, 0, 1],
-        ])
-
-
-        myTransformationz = np.array([
-            [np.cos(theta), -np.sin(theta), 0, 0],
-            [np.sin(theta), np.cos(theta), 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1],
-        ])
-
-        tx, ty, tz = 0, 0, 0.5
-        movTrans = np.array([
-            [1, 0, 0, tx],
-            [0, 1, 0, ty],
-            [0, 0, 1, tz],
-            [0, 0, 0, 1],
-        ])
-
-        sx, sy, sz = 1, 1, 1
-        scaleTrans = np.array([
-            [sx, 0, 0, 0],
-            [0, sy, 0, 0],
-            [0, 0, sz, 0],
-            [0, 0, 0, 1],
-        ])
-
-        myTransformation = movTrans
-        # myTransformation = np.identity(4)
+        myTransformation = translationMat @ rotationMatU @ rotationMatV @ rotationMatW
 
         self.transformationMat = parentTransformationMat @ self.postRotationMat @ myTransformation @ self.preRotationMat 
 

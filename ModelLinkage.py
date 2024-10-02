@@ -14,7 +14,6 @@ from Component import Component
 from Point import Point
 import ColorType as Ct
 from Shapes import Cube
-from Shapes import Cylinder
 import numpy as np
 
 

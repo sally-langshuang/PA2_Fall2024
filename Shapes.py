@@ -11,8 +11,8 @@ import GLUtility
 import ColorType
 import numpy as np
 
-def getVertexData(filename):
 
+def getVertexData(filename):
     colladaData = Collada(filename)
 
     # generate vertices from model data
@@ -24,11 +24,11 @@ def getVertexData(filename):
 
     # construct vertex list
     vertices = np.array([])
-    
+
     for vert in tridata.vertex:
-        vert = np.concatenate((vert, [0.,0.,0.]), axis=0) # empty normals
-        vert = np.concatenate((vert, [0.,0.,0.]), axis=0) # color
-        vert = np.concatenate((vert, [0.,0.]), axis=0) # empty UV
+        vert = np.concatenate((vert, [0., 0., 0.]), axis=0)  # empty normals
+        vert = np.concatenate((vert, [0., 0., 0.]), axis=0)  # color
+        vert = np.concatenate((vert, [0., 0.]), axis=0)  # empty UV
         vertices = np.append(vertices, vert)
 
     # construct indices
@@ -38,6 +38,7 @@ def getVertexData(filename):
         indices = np.append(indices, tri.indices)
 
     return (vertices, indices)
+
 
 class Shape(Component):
     vertexData = None
@@ -63,8 +64,8 @@ class Shape(Component):
         self.mesh = DisplayableMesh(shaderProg, size, vertexData, indexData, color)
         super(Shape, self).__init__(position, self.mesh)
 
-class Cone(Shape):
 
+class Cone(Shape):
     pathname = "assets/cone0.dae"
     pathnameLP = "assets/coneLP.dae"
     data = getVertexData(pathname)
@@ -102,8 +103,8 @@ class Cone(Shape):
         self.setPreRotation(tIn)
         self.setPostRotation(tOut)
 
-class Cube(Shape):
 
+class Cube(Shape):
     pathname = "assets/cube0.dae"
     data = getVertexData(pathname)
     vertices = data[0]
@@ -133,8 +134,8 @@ class Cube(Shape):
         self.setPreRotation(tIn)
         self.setPostRotation(tOut)
 
-class Cylinder(Shape):
 
+class Cylinder(Shape):
     pathname = "assets/cylinder0.dae"
     pathnameLP = "assets/cylinderLP.dae"
     data = getVertexData(pathname)
@@ -156,7 +157,8 @@ class Cylinder(Shape):
         :type color: ColorType
         """
         if lowPoly:
-            super(Cylinder, self).__init__(position, shaderProg, size, self.verticesLP.copy(), self.indicesLP.copy(), color)
+            super(Cylinder, self).__init__(position, shaderProg, size, self.verticesLP.copy(), self.indicesLP.copy(),
+                                           color)
         else:
             super(Cylinder, self).__init__(position, shaderProg, size, self.vertices.copy(), self.indices.copy(), color)
         # translate object by -z extent of the new component so that rotations occur @ the joint
@@ -171,8 +173,8 @@ class Cylinder(Shape):
         self.setPreRotation(tIn)
         self.setPostRotation(tOut)
 
-class Sphere(Shape):
 
+class Sphere(Shape):
     pathname = "assets/sphere0.dae"
     pathnameLP = "assets/sphereLP.dae"
     data = getVertexData(pathname)
@@ -198,7 +200,8 @@ class Sphere(Shape):
         :type limb: boolean
         """
         if lowPoly:
-            super(Sphere, self).__init__(position, shaderProg, size, self.verticesLP.copy(), self.indicesLP.copy(), color)
+            super(Sphere, self).__init__(position, shaderProg, size, self.verticesLP.copy(), self.indicesLP.copy(),
+                                         color)
         else:
             super(Sphere, self).__init__(position, shaderProg, size, self.vertices.copy(), self.indices.copy(), color)
         # translate object by -z extent of the new component so that rotations occur @ the joint
