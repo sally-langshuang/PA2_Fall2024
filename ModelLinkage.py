@@ -13,7 +13,7 @@ Modified by Daniel Scrivener 09/2023
 from Component import Component
 from Point import Point
 import ColorType as Ct
-from Shapes import Cube
+from Shapes import Cube, Sphere
 import numpy as np
 
 

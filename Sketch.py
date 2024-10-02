@@ -14,6 +14,7 @@ import math
 import numpy as np
 from ModelAxes import ModelAxes
 from ModelLinkage import ModelLinkage
+from Model import ModelSpider
 
 import ColorType
 from Point import Point
@@ -149,6 +150,8 @@ class Sketch(CanvasBase):
         self.shaderProg.compile()
 
         ##### TODO 3: Initialize your model
+        spider = ModelSpider(self, Point((0, 0, 0)), self.shaderProg)
+
         # You should initialize your model here.
         # self.topLevelComponent should refer to your model
         # and self.components should refer to your model's components.
@@ -160,10 +163,14 @@ class Sketch(CanvasBase):
         self.topLevelComponent.clear()
         self.topLevelComponent.addChild(model)
         self.topLevelComponent.addChild(axes)
+        self.topLevelComponent.addChild(spider)
         self.topLevelComponent.initialize()
 
         self.components = model.componentList
         self.cDict = model.componentDict
+
+        self.components = spider.componentList
+        self.cDict = spider.componentDict
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
@@ -445,7 +452,7 @@ if __name__ == "__main__":
     app = wx.App(False)
     # Set FULL_REPAINT_ON_RESIZE will repaint everything when scaling the frame, here is the style setting for it: wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE
     # Resize disabled in this one
-    frame = wx.Frame(None, size=(500, 500), title="Test",
+    frame = wx.Frame(None, size=(800, 800), title="Test",
                      style=wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE)  # Disable Resize: ^ wx.RESIZE_BORDER
     canvas = Sketch(frame)
 
