@@ -107,7 +107,7 @@ class Sketch(CanvasBase):
     viewMat = None
     perspMat = None
 
-    select_obj_index = -1 # index of selected component in self.components
+    select_obj_index = -1  # index of selected component in self.components
     select_axis_index = -1  # index of selected axis
     select_color = [ColorType.ColorType(1, 0, 0), ColorType.ColorType(0, 1, 0), ColorType.ColorType(0, 0, 1)]
 
@@ -141,7 +141,6 @@ class Sketch(CanvasBase):
         self.cameraPhi = math.pi / 6
         self.cameraTheta = math.pi / 2
 
-        
     def InitGL(self):
         """
         Called once in order to initialize the OpenGL environemnt.
@@ -265,8 +264,8 @@ class Sketch(CanvasBase):
         wheelChange = wheelRotation / abs(wheelRotation)  # normalize wheel change
         if len(self.components) > 0 and self.select_obj_index >= 0:
             self.components[self.select_obj_index].rotate(wheelChange * self.MOUSE_SCROLL_SPEED,
-                                                            self.components[self.select_obj_index].
-                                                            axisBucket[self.select_axis_index])
+                                                          self.components[self.select_obj_index].
+                                                          axisBucket[self.select_axis_index])
         self.update()
 
     def unprojectCanvas(self, x, y, u=0.5):
@@ -296,9 +295,9 @@ class Sketch(CanvasBase):
         x_ndc = (x - viewport[0]) / viewport[2] * 2.0 - 1.0
         y_ndc = (y - viewport[1]) / viewport[3] * 2.0 - 1.0
         z_ndc = 2.0 * z - 1.0
-        
+
         ndc_coords = np.array([x_ndc, y_ndc, z_ndc, 1.0])
-        world_coords = inv_model_view_proj_matrix.T @ ndc_coords # transpose because they are row-major
+        world_coords = inv_model_view_proj_matrix.T @ ndc_coords  # transpose because they are row-major
         if world_coords[3] != 0:
             world_coords /= world_coords[3]
         return world_coords[:3]
@@ -331,7 +330,7 @@ class Sketch(CanvasBase):
             self.last_mouse_middlePosition[0] = x
             self.last_mouse_middlePosition[1] = y
             return
-        
+
         dx = x - self.last_mouse_middlePosition[0]
         dy = y - self.last_mouse_middlePosition[1]
 
@@ -404,7 +403,7 @@ class Sketch(CanvasBase):
         else:
             size = -size
         if event.ControlDown():
-            size = size /10
+            size = size / 10
         return size
 
     def _adjust_angle(self, target, keycode, size):
@@ -443,7 +442,7 @@ class Sketch(CanvasBase):
         target.setDefaultScale(sc)
 
     def adjust(self, name, event):
-        target: Component = self.cDict["right_leg_2_3"]
+        target: Component = self.cDict["tailbody"]
         keycode = event.GetUnicodeKey()
         size = self._adjust_size(event)
         if size is None:
@@ -452,8 +451,8 @@ class Sketch(CanvasBase):
         self._adjust_angle(target, keycode, size)
         self._adjust_pos(target, keycode, size)
         self._adjust_scale(target, keycode, size)
-        print(f"current u: {target.uAngle} v: {target.vAngle} w: {target.wAngle}  pos: {target.currentPos}, scale: {target.currentScaling}")
-
+        print(
+            f"current u: {target.uAngle} v: {target.vAngle} w: {target.wAngle}  pos: {target.currentPos}, scale: {target.currentScaling}")
 
     def Interrupt_Keyboard(self, keycode):
         """
@@ -469,7 +468,6 @@ class Sketch(CanvasBase):
         # HINT: selecting individual components is easier if you create a dictionary of components (self.cDict)
         # that can be indexed by name (e.g. self.cDict["leg1"] instead of self.components[10])
 
-
         if keycode in [wx.WXK_RETURN]:
             # enter component editing mode
 
@@ -481,7 +479,7 @@ class Sketch(CanvasBase):
                 # set new selected component & its color
                 self.select_obj_index = (self.select_obj_index + 1) % len(self.components)
                 self.components[self.select_obj_index].setCurrentColor(self.select_color[self.select_axis_index])
-                
+
             self.update()
         if keycode in [wx.WXK_LEFT]:
             # Last rotation axis of this component
@@ -541,24 +539,44 @@ class Sketch(CanvasBase):
 
         if keycode == ord('3'):
             print("left step")
-            self.rotate_leg("left_leg_1_1", -30, -20, 0)
-            self.rotate_leg("left_leg_1_2", -10, 40,0)
-            self.rotate_leg("left_leg_1_3", -10, -10, 0)
+            self.rotate_u_v_w("left_leg_1_1", -30, -20, 0)
+            self.rotate_u_v_w("left_leg_1_2", -10, 40, 0)
+            self.rotate_u_v_w("left_leg_1_3", -10, -10, 0)
 
-            self.rotate_leg("left_leg_3_1", -20, -10, 30)
-            self.rotate_leg("left_leg_3_2", 20, 0, 0)
-            self.rotate_leg("left_leg_3_3", -10, 0, 0)
+            self.rotate_u_v_w("left_leg_3_1", -20, -10, 30)
+            self.rotate_u_v_w("left_leg_3_2", 20, 0, 0)
+            self.rotate_u_v_w("left_leg_3_3", -10, 0, 0)
 
-            self.rotate_leg("right_leg_2_1", -20, -10, 0)
-            self.rotate_leg("right_leg_2_2", 13, -15, -15)
-            self.rotate_leg("right_leg_2_3", 10, 0, 0)
+            self.rotate_u_v_w("right_leg_2_1", -20, -10, 0)
+            self.rotate_u_v_w("right_leg_2_2", 13, -15, -15)
+            self.rotate_u_v_w("right_leg_2_3", 10, 0, 0)
 
-            self.rotate_leg("right_leg_4_1", -20, -10, 0)
-            # self.rotate_leg("right_leg_2_2", 13, -15, -15)
-            # self.rotate_leg("right_leg_2_3", 10, 0,0)
+            self.rotate_u_v_w("right_leg_4_1", -140, 110, -150)
+            self.rotate_u_v_w("right_leg_4_2", -28, -20, 0)
+            self.rotate_u_v_w("right_leg_2_3", -20, -10, 0)
 
+        if keycode == ord('4'):
+            print("right step")
+            self.rotate_u_v_w("right_leg_1_1", -30, 20, 0)
+            self.rotate_u_v_w("right_leg_1_2", -10, -40, 0)
+            self.rotate_u_v_w("right_leg_1_3", -10, 10, 0)
 
-            if keycode == ord('0'):
+            self.rotate_u_v_w("right_leg_3_1", -20, 10, -30)
+            self.rotate_u_v_w("right_leg_3_2", 20, 0, 0)
+            self.rotate_u_v_w("right_leg_3_3", -10, 0, 0)
+
+            self.rotate_u_v_w("left_leg_2_1", -20, 10, 0)
+            self.rotate_u_v_w("left_leg_2_2", 13, 15, 15)
+            self.rotate_u_v_w("left_leg_2_3", 10, 0, 0)
+
+            self.rotate_u_v_w("left_leg_4_1", -140, -110, 150)
+            self.rotate_u_v_w("left_leg_4_2", -28, -0, 0)
+            self.rotate_u_v_w("left_leg_2_3", -20, 10, 0)
+        if keycode == ord('5'):
+            print('tail')
+            self.rotate_u_v_w("tailbody", 10, 0, 0)
+
+        if keycode == ord('0'):
             for target in self.pose_obj:
                 target.setCurrentColor(target.default_color)
                 target.uAngle = target.default_uAngle
@@ -566,7 +584,8 @@ class Sketch(CanvasBase):
                 target.wAngle = target.default_wAngle
             self.pose_obj.clear()
             self.update()
-    def rotate_leg(self, name, u_delta, v_delta, w_delta):
+
+    def rotate_u_v_w(self, name, u_delta, v_delta, w_delta):
         leg = self.cDict[name]
         leg.uAngle = leg.default_uAngle + u_delta
         leg.vAngle = leg.default_vAngle + v_delta

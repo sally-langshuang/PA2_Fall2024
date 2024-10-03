@@ -30,7 +30,7 @@ class ModelSpider(Component):
             "downbody": downbody,
             "tailbody": tailbody,
         }
-        floor = self.create_obj(downbody, Cube, [0, -0.7, 0.7], shaderProg,[6, 0.001, 6],CT.GRAY, 0, 0, 0,self.componentList, self.componentDict, "floor" )
+        # floor = self.create_obj(downbody, Cube, [0, -0.7, 0.7], shaderProg,[6, 0.001, 6],CT.GRAY, 0, 0, 0,self.componentList, self.componentDict, "floor" )
 
 
 
