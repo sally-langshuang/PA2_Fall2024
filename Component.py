@@ -221,7 +221,7 @@ class Component:
         # e.g. self.transformationMat = C @ B @ A 
 
         # Change only this line!
-        myTransformation = translationMat @ rotationMatU @ rotationMatV @ rotationMatW
+        myTransformation = translationMat @ rotationMatU @ rotationMatV @ rotationMatW @ scalingMat
 
         self.transformationMat = parentTransformationMat @ self.postRotationMat @ myTransformation @ self.preRotationMat 
 

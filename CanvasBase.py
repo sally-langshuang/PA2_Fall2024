@@ -318,6 +318,7 @@ class CanvasBase(glcanvas.GLCanvas):
         :return: None
         """
         keycode = event.GetKeyCode()
+        self.adjust("left_leg2_1", event)
         self.Interrupt_Keyboard(keycode)
         self.Refresh(True)
 
@@ -341,6 +342,9 @@ class CanvasBase(glcanvas.GLCanvas):
 
     def Interrupt_Keyboard(self, keycode):
         pass  # Fully Override please
+
+    def adjust(self, name, event):
+        pass
 
     def Interrupt_MouseLeftDragging(self, x, y):
         pass  # Fully Override please

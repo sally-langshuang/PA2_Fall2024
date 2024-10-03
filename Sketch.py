@@ -10,12 +10,12 @@ Modified by Daniel Scrivener 07/2022
 """
 
 import math
-
+import copy
 import numpy as np
 from ModelAxes import ModelAxes
 from ModelLinkage import ModelLinkage
 from Model import ModelSpider
-
+from Component import Component
 import ColorType
 from Point import Point
 from CanvasBase import CanvasBase
@@ -110,6 +110,8 @@ class Sketch(CanvasBase):
     select_obj_index = -1 # index of selected component in self.components
     select_axis_index = -1  # index of selected axis
     select_color = [ColorType.ColorType(1, 0, 0), ColorType.ColorType(0, 1, 0), ColorType.ColorType(0, 0, 1)]
+
+    pose_obj = []
 
     # If you are having trouble rotating the camera, try increasing this parameter
     # (Windows users with trackpads may need this)
@@ -381,6 +383,78 @@ class Sketch(CanvasBase):
         """
         self.topLevelComponent.update(np.identity(4))
 
+    def _adjust_size(self, event):
+        keycode = event.GetUnicodeKey()
+        angle = 10
+        pos = 0.02
+        scale = 0.1
+        if keycode == ord('U') or keycode == ord('u') or keycode == ord('V') or keycode == ord('v') or keycode == ord(
+                'W') or keycode == ord('w'):
+            size = angle
+        elif keycode == ord('X') or keycode == ord('x') or keycode == ord('Y') or keycode == ord('y') or keycode == ord(
+                'Z') or keycode == ord('z'):
+            size = pos
+        elif keycode == ord('C') or keycode == ord('c') or keycode == ord('K') or keycode == ord('k') or keycode == ord(
+                'G') or keycode == ord('g'):
+            size = scale
+        else:
+            return None
+        if event.ShiftDown():
+            pass
+        else:
+            size = -size
+        if event.ControlDown():
+            size = size /10
+        return size
+
+    def _adjust_angle(self, target, keycode, size):
+        if keycode == ord('u') or keycode == ord('U'):
+            target.setDefaultAngle(target.uAngle + size, target.uAxis)
+        elif keycode == ord('v') or keycode == ord('V'):
+            target.setDefaultAngle(target.vAngle + size, target.vAxis)
+        elif keycode == ord('w') or keycode == ord('W'):
+            target.setDefaultAngle(target.wAngle + size, target.wAxis)
+        else:
+            return
+
+    def _adjust_pos(self, target, keycode, size):
+        if keycode == ord('x') or keycode == ord('X'):
+            j = 0
+        elif keycode == ord('y') or keycode == ord('Y'):
+            j = 1
+        elif keycode == ord('z') or keycode == ord('Z'):
+            j = 2
+        else:
+            return
+        p = Point(tuple(c + size if i == j else c for i, c in enumerate(target.currentPos)))
+        target.setDefaultPosition(p)
+
+    def _adjust_scale(self, target, keycode, size):
+        if keycode == ord('c') or keycode == ord('C'):
+            i = 0
+        elif keycode == ord('k') or keycode == ord('K'):
+            i = 1
+        elif keycode == ord('g') or keycode == ord('G'):
+            i = 2
+        else:
+            return
+        sc = copy.deepcopy(target.currentScaling)
+        sc[i] = sc[i] + size if sc[i] + size > 0 else 0.001
+        target.setDefaultScale(sc)
+
+    def adjust(self, name, event):
+        target: Component = self.cDict["right_leg_2_3"]
+        keycode = event.GetUnicodeKey()
+        size = self._adjust_size(event)
+        if size is None:
+            return
+        target.setDefaultColor(ColorType.RED)
+        self._adjust_angle(target, keycode, size)
+        self._adjust_pos(target, keycode, size)
+        self._adjust_scale(target, keycode, size)
+        print(f"current u: {target.uAngle} v: {target.vAngle} w: {target.wAngle}  pos: {target.currentPos}, scale: {target.currentScaling}")
+
+
     def Interrupt_Keyboard(self, keycode):
         """
         Keyboard interrupt bindings
@@ -394,7 +468,8 @@ class Sketch(CanvasBase):
         # Create five unique poses to demonstrate your creature's joint rotations.
         # HINT: selecting individual components is easier if you create a dictionary of components (self.cDict)
         # that can be indexed by name (e.g. self.cDict["leg1"] instead of self.components[10])
-            
+
+
         if keycode in [wx.WXK_RETURN]:
             # enter component editing mode
 
@@ -445,6 +520,58 @@ class Sketch(CanvasBase):
             self.select_obj_index = -1
             self.select_axis_index = -1
             self.update()
+        if keycode == ord('1'):
+            print("look left")
+            # up -10, 0   right 0, -10  left 0 10  down 10, 0
+            left_eye = self.cDict["left_eye_pupil"]
+            self.pose_obj.append(left_eye)
+            right_eye = self.cDict["right_eye_pupil"]
+            self.pose_obj.append(right_eye)
+            for target in self.pose_obj:
+                target.vAngle = target.default_vAngle + 10
+            self.update()
+        if keycode == ord('2'):
+            print('eat')
+            left_mouth = self.cDict["left_mouth"]
+            left_mouth.vAngle = left_mouth.default_vAngle - 30
+            self.pose_obj.append(left_mouth)
+            right_mouth = self.cDict["right_mouth"]
+            right_mouth.vAngle = right_mouth.default_vAngle + 30
+            self.pose_obj.append(right_mouth)
+
+        if keycode == ord('3'):
+            print("left step")
+            self.rotate_leg("left_leg_1_1", -30, -20, 0)
+            self.rotate_leg("left_leg_1_2", -10, 40,0)
+            self.rotate_leg("left_leg_1_3", -10, -10, 0)
+
+            self.rotate_leg("left_leg_3_1", -20, -10, 30)
+            self.rotate_leg("left_leg_3_2", 20, 0, 0)
+            self.rotate_leg("left_leg_3_3", -10, 0, 0)
+
+            self.rotate_leg("right_leg_2_1", -20, -10, 0)
+            self.rotate_leg("right_leg_2_2", 13, -15, -15)
+            self.rotate_leg("right_leg_2_3", 10, 0, 0)
+
+            self.rotate_leg("right_leg_4_1", -20, -10, 0)
+            # self.rotate_leg("right_leg_2_2", 13, -15, -15)
+            # self.rotate_leg("right_leg_2_3", 10, 0,0)
+
+
+            if keycode == ord('0'):
+            for target in self.pose_obj:
+                target.setCurrentColor(target.default_color)
+                target.uAngle = target.default_uAngle
+                target.vAngle = target.default_vAngle
+                target.wAngle = target.default_wAngle
+            self.pose_obj.clear()
+            self.update()
+    def rotate_leg(self, name, u_delta, v_delta, w_delta):
+        leg = self.cDict[name]
+        leg.uAngle = leg.default_uAngle + u_delta
+        leg.vAngle = leg.default_vAngle + v_delta
+        leg.wAngle = leg.default_wAngle + w_delta
+        self.pose_obj.append(leg)
 
 
 if __name__ == "__main__":
