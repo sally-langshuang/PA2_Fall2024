@@ -318,8 +318,8 @@ class CanvasBase(glcanvas.GLCanvas):
         :return: None
         """
         keycode = event.GetKeyCode()
-        self.adjust("left_leg2_1", event)
         self.Interrupt_Keyboard(keycode)
+        self.adjust(event)
         self.Refresh(True)
 
     def modelUpdate(self):

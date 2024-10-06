@@ -167,10 +167,11 @@ class Sketch(CanvasBase):
         self.topLevelComponent.addChild(spider)
         self.topLevelComponent.initialize()
 
-        self.components = model.componentList
-        self.cDict = model.componentDict
+        self.components = model.componentList + spider.componentList
+        self.cDict = {**model.componentDict, **spider.componentDict}
 
-        self.components = spider.componentList
+
+        self.components = model.componentList +  spider.componentList
         self.cDict = spider.componentDict
 
         gl.glClearColor(*self.backgroundColor, 1.0)
@@ -441,8 +442,8 @@ class Sketch(CanvasBase):
         sc[i] = sc[i] + size if sc[i] + size > 0 else 0.001
         target.setDefaultScale(sc)
 
-    def adjust(self, name, event):
-        target: Component = self.cDict["tailbody"]
+    def adjust(self, event):
+        target: Component = self.components[self.select_obj_index]
         keycode = event.GetUnicodeKey()
         size = self._adjust_size(event)
         if size is None:
