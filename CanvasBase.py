@@ -282,6 +282,8 @@ class CanvasBase(glcanvas.GLCanvas):
         else:
             # Normal Mouse Moving
             self.dragging_event = False
+
+            self.EyeMove(event)
             self.Interrupt_MouseMoving(event.GetX(), self.size[1] - event.GetY())
             self.Refresh(True)
 
@@ -320,6 +322,7 @@ class CanvasBase(glcanvas.GLCanvas):
         keycode = event.GetKeyCode()
         self.Interrupt_Keyboard(keycode)
         self.adjust(event)
+        self.pose(event)
         self.Refresh(True)
 
     def modelUpdate(self):
@@ -344,6 +347,12 @@ class CanvasBase(glcanvas.GLCanvas):
         pass  # Fully Override please
 
     def adjust(self, name, event):
+        pass
+
+    def EyeMove(self, event):
+        pass
+
+    def pose(self, event):
         pass
 
     def Interrupt_MouseLeftDragging(self, x, y):

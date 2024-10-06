@@ -170,8 +170,7 @@ class Sketch(CanvasBase):
         self.components = model.componentList + spider.componentList
         self.cDict = {**model.componentDict, **spider.componentDict}
 
-
-        self.components = model.componentList +  spider.componentList
+        self.components = model.componentList + spider.componentList
         self.cDict = spider.componentDict
 
         gl.glClearColor(*self.backgroundColor, 1.0)
@@ -220,6 +219,24 @@ class Sketch(CanvasBase):
             self.init = True
         # the draw method
         self.OnDraw()
+
+    def EyeMove(self, event):
+        vAngle = self.cameraTheta - math.pi * 3 / 2 % (2 * math.pi)
+        max_size = 10
+        if vAngle > -0.5*math.pi and vAngle < 0.5 * math.pi:
+            v_delta = max_size * vAngle / (0.5*math.pi)
+        else:
+            return
+        u_delta = -max_size * self.cameraPhi / (0.5*math.pi)
+        left_eye = self.cDict["left_eye_pupil"]
+        self.pose_obj.append(left_eye)
+        right_eye = self.cDict["right_eye_pupil"]
+        self.pose_obj.append(right_eye)
+        for target in self.pose_obj:
+            target.vAngle = target.default_vAngle + v_delta
+            target.uAngle = target.default_uAngle + u_delta
+        self.update()
+
 
     def OnDraw(self):
         gl.glClearColor(*self.backgroundColor, 1.0)
@@ -443,6 +460,8 @@ class Sketch(CanvasBase):
         target.setDefaultScale(sc)
 
     def adjust(self, event):
+        if self.select_obj_index <= 0:
+            return
         target: Component = self.components[self.select_obj_index]
         keycode = event.GetUnicodeKey()
         size = self._adjust_size(event)
@@ -519,8 +538,11 @@ class Sketch(CanvasBase):
             self.select_obj_index = -1
             self.select_axis_index = -1
             self.update()
+
+    def pose(self, event):
+        keycode = event.GetKeyCode()
         if keycode == ord('1'):
-            print("look left")
+            # print("look left")
             # up -10, 0   right 0, -10  left 0 10  down 10, 0
             left_eye = self.cDict["left_eye_pupil"]
             self.pose_obj.append(left_eye)
@@ -530,53 +552,50 @@ class Sketch(CanvasBase):
                 target.vAngle = target.default_vAngle + 10
             self.update()
         if keycode == ord('2'):
-            print('eat')
+            # print('eat')
             left_mouth = self.cDict["left_mouth"]
             left_mouth.vAngle = left_mouth.default_vAngle - 30
             self.pose_obj.append(left_mouth)
             right_mouth = self.cDict["right_mouth"]
             right_mouth.vAngle = right_mouth.default_vAngle + 30
             self.pose_obj.append(right_mouth)
-
         if keycode == ord('3'):
-            print("left step")
-            self.rotate_u_v_w("left_leg_1_1", -30, -20, 0)
-            self.rotate_u_v_w("left_leg_1_2", -10, 40, 0)
-            self.rotate_u_v_w("left_leg_1_3", -10, -10, 0)
+            # print("left step")
+            self.rotate_u_v_w("left_joint_0_0", -30, -20, 0)
+            self.rotate_u_v_w("left_joint_0_1", -10, 40, 0)
+            self.rotate_u_v_w("left_joint_0_2", -10, -10, 0)
 
-            self.rotate_u_v_w("left_leg_3_1", -20, -10, 30)
-            self.rotate_u_v_w("left_leg_3_2", 20, 0, 0)
-            self.rotate_u_v_w("left_leg_3_3", -10, 0, 0)
+            self.rotate_u_v_w("left_joint_2_0", -20, -10, 30)
+            self.rotate_u_v_w("left_joint_2_1", 20, 0, 0)
+            self.rotate_u_v_w("left_joint_2_2", -10, 0, 0)
 
-            self.rotate_u_v_w("right_leg_2_1", -20, -10, 0)
-            self.rotate_u_v_w("right_leg_2_2", 13, -15, -15)
-            self.rotate_u_v_w("right_leg_2_3", 10, 0, 0)
+            self.rotate_u_v_w("right_joint_1_0", -20, -10, 0)
+            self.rotate_u_v_w("right_joint_1_1", 13, -15, -15)
+            self.rotate_u_v_w("right_joint_1_2", 10, 0, 0)
 
-            self.rotate_u_v_w("right_leg_4_1", -140, 110, -150)
-            self.rotate_u_v_w("right_leg_4_2", -28, -20, 0)
-            self.rotate_u_v_w("right_leg_2_3", -20, -10, 0)
-
+            self.rotate_u_v_w("right_joint_3_0", -140, 110, -150)
+            self.rotate_u_v_w("right_joint_3_1", -28, -20, 0)
+            self.rotate_u_v_w("right_joint_3_2", -20, -10, 0)
         if keycode == ord('4'):
-            print("right step")
-            self.rotate_u_v_w("right_leg_1_1", -30, 20, 0)
-            self.rotate_u_v_w("right_leg_1_2", -10, -40, 0)
-            self.rotate_u_v_w("right_leg_1_3", -10, 10, 0)
+            # print("right step")
+            self.rotate_u_v_w("right_joint_0_0", -30, 20, 0)
+            self.rotate_u_v_w("right_joint_0_1", -10, -40, 0)
+            self.rotate_u_v_w("right_joint_0_2", -10, 10, 0)
 
-            self.rotate_u_v_w("right_leg_3_1", -20, 10, -30)
-            self.rotate_u_v_w("right_leg_3_2", 20, 0, 0)
-            self.rotate_u_v_w("right_leg_3_3", -10, 0, 0)
+            self.rotate_u_v_w("right_joint_2_0", -20, 10, -30)
+            self.rotate_u_v_w("right_joint_2_1", 20, 0, 0)
+            self.rotate_u_v_w("right_joint_2_2", -10, 0, 0)
 
-            self.rotate_u_v_w("left_leg_2_1", -20, 10, 0)
-            self.rotate_u_v_w("left_leg_2_2", 13, 15, 15)
-            self.rotate_u_v_w("left_leg_2_3", 10, 0, 0)
+            self.rotate_u_v_w("left_joint_1_0", -20, 10, 0)
+            self.rotate_u_v_w("left_joint_1_1", 13, 15, 15)
+            self.rotate_u_v_w("left_joint_1_2", 10, 0, 0)
 
-            self.rotate_u_v_w("left_leg_4_1", -140, -110, 150)
-            self.rotate_u_v_w("left_leg_4_2", -28, -0, 0)
-            self.rotate_u_v_w("left_leg_2_3", -20, 10, 0)
+            self.rotate_u_v_w("left_joint_3_0", -140, -110, 150)
+            self.rotate_u_v_w("left_joint_3_1", -28, -0, 0)
+            self.rotate_u_v_w("left_joint_3_2", -20, 10, 0)
         if keycode == ord('5'):
-            print('tail')
+            # print('tail')
             self.rotate_u_v_w("tailbody", 10, 0, 0)
-
         if keycode == ord('0'):
             for target in self.pose_obj:
                 target.setCurrentColor(target.default_color)
