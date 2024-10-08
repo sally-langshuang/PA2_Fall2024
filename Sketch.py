@@ -221,20 +221,36 @@ class Sketch(CanvasBase):
         self.OnDraw()
 
     def EyeMove(self, event):
+        # x, y = event.GetX(), self.size[1] - event.GetY()
         vAngle = self.cameraTheta - math.pi * 3 / 2 % (2 * math.pi)
-        max_size = 10
-        if vAngle > -0.5*math.pi and vAngle < 0.5 * math.pi:
-            v_delta = max_size * vAngle / (0.5*math.pi)
-        else:
+        if vAngle <= -0.5*math.pi and vAngle >= 0.5 * math.pi:
             return
-        u_delta = -max_size * self.cameraPhi / (0.5*math.pi)
+        center_x ,center_y = self.size[0] / 2, self.size[1]/2
+        x, y = event.GetX(), self.size[1] - event.GetY()
+        x, y = x - center_x, y - center_y
+        tan_phi = math.atan(x / self.cameraDis)
+        tan_theta = math.atan(y / self.cameraDis)
         left_eye = self.cDict["left_eye_pupil"]
-        self.pose_obj.append(left_eye)
         right_eye = self.cDict["right_eye_pupil"]
-        self.pose_obj.append(right_eye)
-        for target in self.pose_obj:
-            target.vAngle = target.default_vAngle + v_delta
-            target.uAngle = target.default_uAngle + u_delta
+        v_delta = - (tan_phi / (math.pi /2 ))*10
+        u_delta = (tan_theta / (math.pi /2 ))*10
+        left_eye.vAngle = left_eye.default_vAngle + v_delta
+        left_eye.uAngle = left_eye.default_uAngle + u_delta
+        right_eye.vAngle = right_eye.default_vAngle + v_delta
+        right_eye.uAngle = right_eye.default_uAngle + u_delta
+
+        # print(f"{tan_phi} {tan_theta} {event.GetX()} {event.GetY()} {self.size} {self.cameraPhi} {self.cameraTheta} {self.cameraDis} {self.getCameraPos()}")
+        #
+        # max_size = 10
+
+        # u_delta = -max_size * self.cameraPhi / (0.5*math.pi)
+        # left_eye = self.cDict["left_eye_pupil"]
+        # self.pose_obj.append(left_eye)
+        # right_eye = self.cDict["right_eye_pupil"]
+        # self.pose_obj.append(right_eye)
+        # for target in self.pose_obj:
+        #     target.vAngle = target.default_vAngle + v_delta
+        #     target.uAngle = target.default_uAngle + u_delta
         self.update()
 
 
@@ -539,25 +555,25 @@ class Sketch(CanvasBase):
             self.select_axis_index = -1
             self.update()
 
-    def pose(self, event):
+    def Poses(self, event):
         keycode = event.GetKeyCode()
-        if keycode == ord('1'):
-            # print("look left")
-            # up -10, 0   right 0, -10  left 0 10  down 10, 0
-            left_eye = self.cDict["left_eye_pupil"]
-            self.pose_obj.append(left_eye)
-            right_eye = self.cDict["right_eye_pupil"]
-            self.pose_obj.append(right_eye)
-            for target in self.pose_obj:
-                target.vAngle = target.default_vAngle + 10
-            self.update()
+        # if keycode == ord('1'):
+        #     # print("look left")
+        #     # up -10, 0   right 0, -10  left 0 10  down 10, 0
+        #     left_eye = self.cDict["left_eye_pupil"]
+        #     self.pose_obj.append(left_eye)
+        #     right_eye = self.cDict["right_eye_pupil"]
+        #     self.pose_obj.append(right_eye)
+        #     for target in self.pose_obj:
+        #         target.vAngle = target.default_vAngle + 10
+        #     self.update()
         if keycode == ord('2'):
             # print('eat')
             left_mouth = self.cDict["left_mouth"]
-            left_mouth.vAngle = left_mouth.default_vAngle - 30
+            left_mouth.vAngle = left_mouth.default_vAngle + 30
             self.pose_obj.append(left_mouth)
             right_mouth = self.cDict["right_mouth"]
-            right_mouth.vAngle = right_mouth.default_vAngle + 30
+            right_mouth.vAngle = right_mouth.default_vAngle - 30
             self.pose_obj.append(right_mouth)
         if keycode == ord('3'):
             # print("left step")
@@ -596,6 +612,24 @@ class Sketch(CanvasBase):
         if keycode == ord('5'):
             # print('tail')
             self.rotate_u_v_w("tailbody", 10, 0, 0)
+        if keycode == ord('1'):
+            downbody = self.cDict["downbody"]
+            self.pose_obj.append(downbody)
+            upbody = self.cDict["upbody"]
+            self.pose_obj.append(upbody)
+            downbody.uAngle = downbody.default_uAngle + 90
+            upbody.uAngle = upbody.default_uAngle - 90
+            for i in range(4):
+                for j in ['left', 'right']:
+                    target = self.cDict[f"{j}_joint_{i}_0"]
+                    target.uAngle = target.default_uAngle - 40
+
+                    target = self.cDict[f"{j}_joint_{i}_1"]
+                    target.uAngle = target.default_uAngle - 40
+
+                    target = self.cDict[f"{j}_joint_{i}_2"]
+                    target.uAngle = target.default_uAngle - 40
+            self.update()
         if keycode == ord('0'):
             for target in self.pose_obj:
                 target.setCurrentColor(target.default_color)
@@ -618,7 +652,7 @@ if __name__ == "__main__":
     app = wx.App(False)
     # Set FULL_REPAINT_ON_RESIZE will repaint everything when scaling the frame, here is the style setting for it: wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE
     # Resize disabled in this one
-    frame = wx.Frame(None, size=(800, 800), title="Test",
+    frame = wx.Frame(None, size=(500, 500), title="Test",
                      style=wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE)  # Disable Resize: ^ wx.RESIZE_BORDER
     canvas = Sketch(frame)
 

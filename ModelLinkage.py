@@ -45,7 +45,7 @@ class ModelLinkage(Component):
         self.contextParent = parent
 
         linkageLength = 0.5
-        link1 = Cube(Point((0, 0, 0)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE1)
+        link1 = Cube(Point((-1, -1, -0.5)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE1)
         link2 = Cube(Point((0, 0, linkageLength)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE2)
         link3 = Cube(Point((0, 0, linkageLength)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE3)
         link4 = Cube(Point((0, 0, linkageLength)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE4)

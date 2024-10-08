@@ -33,10 +33,8 @@ Creating Mouth:
 Creates a mirrored object by flipping the coordinates and angles, ensuring symmetry between the left and right parts.
 ### pose
 #### pose1
-+ If the '1' key is pressed, it looks left.
-+ It selects the left and right eye pupils (left_eye_pupil and right_eye_pupil) and appends them to the self.pose_obj list.
-A loop adjusts the vAngle (horizontal angle) of each target by adding 10 degrees, simulating a look to the left.
-<img src="imgs/lookleft.png">
++ If the '1' key is pressed, it stand up.
+<img src="imgs/stand.png">
 
 ### pose2
 + If the '2' key is pressed, it open mouth.
@@ -66,20 +64,6 @@ The left-side joints are also adjusted for balance.
 + It clears the pose_obj list and calls self.update() to refresh the scene and reset all actions.
 
 ###  Implement an eye that always looks at the position of the mouse
-#### Calculate Viewing Angle:
-+ vAngle = self.cameraTheta - math.pi * 3 / 2 % (2 * math.pi) is calculating the viewing angle by subtracting 3 𝜋 / 2 3π/2 from the camera's cameraTheta (azimuth) to adjust the viewing angle range.
-+ max_size = 10: This sets a maximum value for the movement range of the pupils, scaling both v_delta and u_delta.
-#### Horizontal Angle Check:
-+ The condition if vAngle > -0.5*math.pi and vAngle < 0.5 * math.pi: checks if the camera's azimuth (vAngle) is within the visible range, meaning the camera is facing the front (between -90° and 90°). The pupils will only move when the camera is within this range.
-+ v_delta = max_size * vAngle / (0.5*math.pi): This calculates the horizontal angle shift for the pupil based on vAngle.
-#### Vertical Angle Calculation:
-
-+ u_delta = -max_size * self.cameraPhi / (0.5*math.pi) computes the vertical shift of the pupils based on the camera's cameraPhi (elevation angle).
-#### Adjusting Pupil Angles:
-+ It retrieves the pupil objects for both the left and right eyes using self.cDict["left_eye_pupil"] and self.cDict["right_eye_pupil"], adding them to self.pose_obj to indicate that they need to be updated.
-+ A for loop then adjusts both vAngle (horizontal) and uAngle (vertical) for each pupil object by adding the deltas to their default angles.
-#### Update:
-+ self.update() triggers an update function, presumably to refresh the scene or apply the new pupil angles, so the eye movement is reflected visually.
-<img src="imgs/move1.png">
-<img src="imgs/move2.png">
+<img src="imgs/eyemove1.png">
+<img src="imgs/eyemove2.png">
 

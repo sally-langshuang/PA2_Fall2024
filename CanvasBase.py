@@ -111,7 +111,7 @@ class CanvasBase(glcanvas.GLCanvas):
         self.Bind(wx.EVT_RIGHT_UP, self.OnMouseRight)
         self.Bind(wx.EVT_CHAR, self.OnKeyDown)
         self.Bind(wx.EVT_SIZE, self.OnResize)
-        self.Bind(wx.EVT_MOUSEWHEEL, self.OnScroll)
+        # self.Bind(wx.EVT_MOUSEWHEEL, self.OnScroll)
         # refresh canvas with constant frame rate
         self.Bind(wx.EVT_TIMER, self.OnPaint)
 
@@ -282,7 +282,6 @@ class CanvasBase(glcanvas.GLCanvas):
         else:
             # Normal Mouse Moving
             self.dragging_event = False
-
             self.EyeMove(event)
             self.Interrupt_MouseMoving(event.GetX(), self.size[1] - event.GetY())
             self.Refresh(True)
@@ -322,7 +321,7 @@ class CanvasBase(glcanvas.GLCanvas):
         keycode = event.GetKeyCode()
         self.Interrupt_Keyboard(keycode)
         self.adjust(event)
-        self.pose(event)
+        self.Poses(event)
         self.Refresh(True)
 
     def modelUpdate(self):
@@ -352,7 +351,7 @@ class CanvasBase(glcanvas.GLCanvas):
     def EyeMove(self, event):
         pass
 
-    def pose(self, event):
+    def Poses(self, event):
         pass
 
     def Interrupt_MouseLeftDragging(self, x, y):
