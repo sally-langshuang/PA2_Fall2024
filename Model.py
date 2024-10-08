@@ -1,4 +1,5 @@
 import copy
+import math
 
 import ColorType
 from Component import Component
@@ -32,7 +33,16 @@ class ModelSpider(Component):
             "downbody": downbody,
             "tailbody": tailbody,
         }
-        # floor = self.create_obj(downbody, Cube, [0, -0.7, 0.7], shaderProg,[6, 0.001, 6],CT.GRAY, 0, 0, 0,self.componentList, self.componentDict, "floor" )
+        # floor = self.create_obj(downbody, Cube, [0, -0.7, 0.7], shaderProg,[6, 0.001, 6],CT.GRAY, [0, 0, 0],self.componentList, self.componentDict, "floor" )
+        center = self.create_obj(downbody, Sphere, [0, -0.7, 0.7], shaderProg,[0.01, 0.01, 0.01],CT.WHITE, [0, 0, 0],self.componentList, self.componentDict, "q" )
+        f_n = 8
+        for i in range(f_n):
+            q_l = 2
+            q = self.create_obj(center, Cylinder, [0, 0, q_l], shaderProg,[0.01, 0.01, q_l],CT.WHITE, [0, 360*i/f_n, 0],self.componentList, self.componentDict, f"q_{i}" )
+            p_z = 1
+            p = self.create_obj(q, Cylinder, [0, 0, 0.74], shaderProg,[0.01, 0.01, 2* p_z * math.sin(math.radians(180/f_n))],CT.WHITE, [0, 180- (180 - 360/f_n)/2, 0],self.componentList, self.componentDict, f"p_{i}" )
+            p_z = 0.5
+            p2 = self.create_obj(q, Cylinder, [0, 0, -0.61], shaderProg,[0.01, 0.01, 2* p_z * math.sin(math.radians(180/f_n))],CT.WHITE, [0, 180- (180 - 360/f_n)/2, 0],self.componentList, self.componentDict, f"p2_{i}" )
 
 
         eye_radis = 0.15
@@ -114,8 +124,8 @@ class ModelSpider(Component):
                                                             [leg_radis, leg_radis, legs_len[j]], leg_colors[j], (0, 0, 0),
                                                             self.componentList,
                                                             self.componentDict, f"leg_{i}_{j}")
-                self.joint_range(left_leg_i_j, 1)
-                self.joint_range(right_leg_i_j, 1)
+                self.joint_range(left_leg_i_j, 20)
+                self.joint_range(right_leg_i_j, 20)
 
 
                 left_parent, right_parent = left_leg_i_j, right_leg_i_j

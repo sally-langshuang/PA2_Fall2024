@@ -111,7 +111,7 @@ class CanvasBase(glcanvas.GLCanvas):
         self.Bind(wx.EVT_RIGHT_UP, self.OnMouseRight)
         self.Bind(wx.EVT_CHAR, self.OnKeyDown)
         self.Bind(wx.EVT_SIZE, self.OnResize)
-        # self.Bind(wx.EVT_MOUSEWHEEL, self.OnScroll)
+        self.Bind(wx.EVT_MOUSEWHEEL, self.OnScroll)
         # refresh canvas with constant frame rate
         self.Bind(wx.EVT_TIMER, self.OnPaint)
 

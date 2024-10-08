@@ -220,6 +220,7 @@ class Sketch(CanvasBase):
         # the draw method
         self.OnDraw()
 
+    # TODO 6
     def EyeMove(self, event):
         # x, y = event.GetX(), self.size[1] - event.GetY()
         vAngle = self.cameraTheta - math.pi * 3 / 2 % (2 * math.pi)
@@ -421,6 +422,7 @@ class Sketch(CanvasBase):
         angle = 10
         pos = 0.02
         scale = 0.1
+        q_size = 30
         if keycode == ord('U') or keycode == ord('u') or keycode == ord('V') or keycode == ord('v') or keycode == ord(
                 'W') or keycode == ord('w'):
             size = angle
@@ -430,6 +432,8 @@ class Sketch(CanvasBase):
         elif keycode == ord('C') or keycode == ord('c') or keycode == ord('K') or keycode == ord('k') or keycode == ord(
                 'G') or keycode == ord('g'):
             size = scale
+        elif keycode == ord('S') or keycode == ord('s') or keycode == ord('A') or keycode == ord('a') or keycode == ord('B') or keycode == ord('b') or keycode == ord('C') or keycode == ord('c'):
+            size = q_size
         else:
             return None
         if event.ShiftDown():
@@ -463,7 +467,7 @@ class Sketch(CanvasBase):
         target.setDefaultPosition(p)
 
     def _adjust_scale(self, target, keycode, size):
-        if keycode == ord('c') or keycode == ord('C'):
+        if keycode == ord('l') or keycode == ord('L'):
             i = 0
         elif keycode == ord('k') or keycode == ord('K'):
             i = 1
@@ -487,8 +491,39 @@ class Sketch(CanvasBase):
         self._adjust_angle(target, keycode, size)
         self._adjust_pos(target, keycode, size)
         self._adjust_scale(target, keycode, size)
+        # self._adjust_quaternions(target, event, size)
         print(
             f"current u: {target.uAngle} v: {target.vAngle} w: {target.wAngle}  pos: {target.currentPos}, scale: {target.currentScaling}")
+
+    def _adjust_quaternions(self,target, event, size):
+        keycode = event.GetUnicodeKey()
+        if keycode == ord('A') or keycode == ord('a'):
+            angle = target.default_uAngle + size
+            rotationAxis = target.uAxis
+        elif keycode == ord('B') or keycode == ord('b'):
+            angle = target.default_vAngle + size
+            rotationAxis = target.vAxis
+        elif keycode == ord('C') or keycode == ord('c'):
+            angle = target.default_wAngle + size
+            rotationAxis = target.wAxis
+        else:
+            return
+
+        a = angle / 180 * math.pi
+
+        sinHalfAngle = math.sin(0.5 * a)
+        cosHalfAngle = math.cos(0.5 * a)
+
+        s = cosHalfAngle
+        a = sinHalfAngle * rotationAxis[0]
+        b = sinHalfAngle * rotationAxis[1]
+        c = sinHalfAngle * rotationAxis[2]
+
+        q = Quaternion(s, a, b, c)
+        q.normalize()
+        target.setQuaternion(q)
+
+        print(f"quaternion: {s} {a} {b} {c}\n {q.toMatrix()}")
 
     def Interrupt_Keyboard(self, keycode):
         """
@@ -498,7 +533,7 @@ class Sketch(CanvasBase):
         :return: None
         """
 
-        ##### TODO 5: Set up your poses and finish the user interface
+        ##### TODO 5: Set up your poses and finish the user interface --> function Poses
         # Define keyboard events to make your creature act in different ways when keys are pressed.
         # Create five unique poses to demonstrate your creature's joint rotations.
         # HINT: selecting individual components is easier if you create a dictionary of components (self.cDict)
@@ -555,6 +590,7 @@ class Sketch(CanvasBase):
             self.select_axis_index = -1
             self.update()
 
+    #  TODO 5
     def Poses(self, event):
         keycode = event.GetKeyCode()
         # if keycode == ord('1'):
@@ -652,7 +688,7 @@ if __name__ == "__main__":
     app = wx.App(False)
     # Set FULL_REPAINT_ON_RESIZE will repaint everything when scaling the frame, here is the style setting for it: wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE
     # Resize disabled in this one
-    frame = wx.Frame(None, size=(500, 500), title="Test",
+    frame = wx.Frame(None, size=(500, 500), title="Pink Spider",
                      style=wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE)  # Disable Resize: ^ wx.RESIZE_BORDER
     canvas = Sketch(frame)
 

@@ -22,7 +22,7 @@ class ModelLinkage(Component):
     Define our linkage model
     """
 
-    ##### TODO 2: Model the Creature
+    ##### TODO 2: Model the Creature --> class ModelSpider
     # Build the class(es) of objects that could utilize your built geometric object/combination classes. E.g., you could define
     # three instances of the cyclinder trunk class and link them together to be the "limb" class of your creature. 
     #
@@ -45,6 +45,7 @@ class ModelLinkage(Component):
         self.contextParent = parent
 
         linkageLength = 0.5
+        # change Point to seperate from spider
         link1 = Cube(Point((-1, -1, -0.5)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE1)
         link2 = Cube(Point((0, 0, linkageLength)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE2)
         link3 = Cube(Point((0, 0, linkageLength)), shaderProg, [0.2, 0.2, linkageLength], Ct.DARKORANGE3)
@@ -63,7 +64,7 @@ class ModelLinkage(Component):
             "link4": link4
         }
 
-        ##### TODO 4: Define creature's joint behavior
+        ##### TODO 4: Define creature's joint behavior --> Model.py class Spider
         # Requirements:
         #   1. Set a reasonable rotation range for each joint,
         #      so that creature won't intersect itself or bend in unnatural ways
